@@ -38,10 +38,21 @@ class boathandler(webapp2.RequestHandler):
 
     def get(self, id=None):
         if id:
-            b = ndb.Key(urlsafe=id).get()
-            b_d = b.to_dict()
-            b_d['self'] = "/boat/" + id
-            self.response.write(json.dumps(b_d))
+            for item in boat.query():
+                if item.id == id:
+                    b = ndb.Key(urlsafe=id).get()
+                    b_d = b.to_dict()
+                    b_d['self'] = "/boat/" + id
+                    self.response.write(json.dumps(b_d))
+                else:
+                    self.response.status = 400
+                    self.response.status.write("error: boat does not exist")
+        else:
+            get_all_boats = [get_boat_query.to_dict()
+                    for get_boat_query in boat.query()]
+            for item in get_all_boats:
+                item['self'] = "/boat/" + str(item['id'])
+            self.response.write(json.dumps(get_all_boats))
 
 #define slip per reqs
 class slip(ndb.Model):
@@ -76,11 +87,28 @@ class sliphandler(webapp2.RequestHandler):
     
     def get(self, id=None):
         if id:
+            for item in slip.query():
+                if item.id == id:
+                    s = ndb.Key(urlsafe=id).get()
+                    s_d = s.to_dict()
+                    s_d['self'] = "/slips/" + id
+                    self.response.write(json.dumps(b_d))
+                else:
+                    self.response.status = 400
+                    self.response.status.write("error: slip does not exist")
+        else:
+            get_all_slips = [get_slip_query.to_dict()
+                    for get_slip_query in slip.query()]
+            for item in get_all_slips:
+                item['self'] = "/slips/" + str(item['id'])
+            self.response.write(json.dumps(get_all_slips))
+'''
+        if id:
             s = ndb.Key(urlsafe=id).get()
             s_d = s.to_dict()
             s_d['self'] = "/slip/" + id
             self.response.write(json.dumps(s_d))
-
+'''
 # [START main_page]
 class MainPage(webapp2.RequestHandler):
 
