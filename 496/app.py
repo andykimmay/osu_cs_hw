@@ -54,6 +54,20 @@ class boathandler(webapp2.RequestHandler):
                 item['self'] = "/boat/" + str(item['id'])
             self.response.write(json.dumps(get_all_boats))
 
+    def delete(self, id=None):
+        if id: 
+            for item in boat.query():
+                if item.id == id:
+                    for space in slip.query(slip.current_boat == id):
+                        slip.current_boat = ""
+                        slip.arrival_date = none
+                        slip.put()
+                    ndb.Key(urlsafe=id).delete()
+                    self.response.write("deleted boat")
+        else:
+            self.response.status = 400
+            self.response.write("error: boat does not exist")
+
 #define slip per reqs
 class slip(ndb.Model):
     id = ndb.StringProperty()
@@ -102,13 +116,21 @@ class sliphandler(webapp2.RequestHandler):
             for item in get_all_slips:
                 item['self'] = "/slips/" + str(item['id'])
             self.response.write(json.dumps(get_all_slips))
-'''
-        if id:
-            s = ndb.Key(urlsafe=id).get()
-            s_d = s.to_dict()
-            s_d['self'] = "/slip/" + id
-            self.response.write(json.dumps(s_d))
-'''
+
+    def delete(self, id=None):
+        if id: 
+            for item in slip.query():
+                if item.id == id:
+                    if item.current_boat:
+                        boat_in_slip = ndb.key(urlsafe=item.current_boat).get()
+                        boat_in_slip.at_sea = True;
+                        boat_in_slip.put()
+                    ndb.Key(urlsafe=id).delete()
+                    self.response.write("deleted slip")
+        else:
+            self.response.status = 400
+            self.response.write("error: slip does not exist")
+
 # [START main_page]
 class MainPage(webapp2.RequestHandler):
 
