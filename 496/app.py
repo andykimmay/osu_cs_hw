@@ -38,15 +38,17 @@ class boathandler(webapp2.RequestHandler):
 
     def get(self, id=None):
         if id:
+            boat_exists = False
             for item in boat.query():
                 if item.id == id:
+                    boat_exists = True
                     b = ndb.Key(urlsafe=id).get()
                     b_d = b.to_dict()
                     b_d['self'] = "/boat/" + id
                     self.response.write(json.dumps(b_d))
-                else:
-                    self.response.status = 400
-                    self.response.status.write("error: boat does not exist")
+            if not boat_exists:
+                self.response.status = 400
+                self.response.write("error: boat does not exist")
         else:
             get_all_boats = [get_boat_query.to_dict()
                     for get_boat_query in boat.query()]
@@ -68,6 +70,37 @@ class boathandler(webapp2.RequestHandler):
             self.response.status = 400
             self.response.write("error: boat does not exist")
 
+    def patch(self, id=None):
+        if id:
+            patch_boat_data = json.loads(self.request.body)
+            exists = False
+            for item in boat.query():
+                if boat.id == id:
+                    exists = True
+            if exists:
+                patch_boat = ndb.Key(urlsafe=id).get()
+                for item in patch_boat_data:
+                    if item == "name":
+                        patch_boat.name = patch_boat_data['name']
+                        patch_boat.put()
+                        self.response.write("boat name was updated")
+                    elif item == "type":
+                        patch_boat.type = patch_boat_data['type']
+                        patch_boat.put()
+                        self.response.write("boat type was updated")
+                    elif item == "length":
+                        patch_boat.length = patch_boat_data['length']
+                        patch_boat.put()
+                        self.response.write("boat length was updated")
+                    else:
+                        self.response.status = 400
+                        self.response.write("error: incorrect format")
+            else:
+                self.response.status = 400
+                self.response.write("error: boat does not exist")
+
+
+
 #define slip per reqs
 class slip(ndb.Model):
     id = ndb.StringProperty()
@@ -80,7 +113,7 @@ class sliphandler(webapp2.RequestHandler):
     def post(self):
         slip_data = json.loads(self.request.body)
         slip_query_results = [slip_query.to_dict()
-                            for slip_query in slip.query()]
+                for slip_query in slip.query()]
         #must have required fields to create slip
         if not slip_data.get('number'):
             self.response.status = 400
@@ -98,18 +131,20 @@ class sliphandler(webapp2.RequestHandler):
                     slip_dict = new_slip.to_dict()
                     slip_dict['self'] = '/slips/' + new_slip.key.urlsafe()
                     self.response.write(json.dumps(slip_dict))
-    
+
     def get(self, id=None):
         if id:
+            slip_exists = False
             for item in slip.query():
                 if item.id == id:
+                    slip_exists = True
                     s = ndb.Key(urlsafe=id).get()
                     s_d = s.to_dict()
                     s_d['self'] = "/slips/" + id
-                    self.response.write(json.dumps(b_d))
-                else:
-                    self.response.status = 400
-                    self.response.status.write("error: slip does not exist")
+                    self.response.write(json.dumps(s_d))
+            if not slip_exists:
+                self.response.status = 400
+                self.response.write("error: slip does not exist")
         else:
             get_all_slips = [get_slip_query.to_dict()
                     for get_slip_query in slip.query()]
@@ -122,7 +157,7 @@ class sliphandler(webapp2.RequestHandler):
             for item in slip.query():
                 if item.id == id:
                     if item.current_boat:
-                        boat_in_slip = ndb.key(urlsafe=item.current_boat).get()
+                        boat_in_slip = ndb.Key(urlsafe=item.current_boat).get()
                         boat_in_slip.at_sea = True;
                         boat_in_slip.put()
                     ndb.Key(urlsafe=id).delete()
@@ -130,6 +165,37 @@ class sliphandler(webapp2.RequestHandler):
         else:
             self.response.status = 400
             self.response.write("error: slip does not exist")
+
+    def patch(self, id=None):
+        if id:
+            patch_slip_data = json.loads(self.request.body)
+            #check to see if slip id exists
+            exists = False
+            for item in slip.query():
+                if item.id == id:
+                    exists = True
+            
+            #self.response.write(patch_slip_data["number"])
+
+            if exists:
+                modify_slip = ndb.Key(urlsafe=id).get()
+                
+                #check to see if number is in use
+                slip_list = [get_slip_query.to_dict()
+                        for get_slip_query in slip.query()]
+                num_exists = False
+                for item in slip_list:
+                    if item['number'] == patch_slip_data['number']:
+                        num_exists = True
+                        self.response.status = 400
+                        self.response.write("error: slip number already exists")
+                if not num_exists:
+                    modify_slip.number = patch_slip_data['number']
+                    modify_slip.put()
+                    self.response.write("updated slip number")
+            else:
+                self.response.status = 400
+                self.response.write("slip does not exist")
 
 # [START main_page]
 class MainPage(webapp2.RequestHandler):
