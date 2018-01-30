@@ -106,7 +106,7 @@ class slip(ndb.Model):
     id = ndb.StringProperty()
     number = ndb.IntegerProperty(required=True)
     current_boat = ndb.StringProperty()
-    arrival_date = ndb.DateProperty()
+    arrival_date = ndb.StringProperty()
 
 #define slip handler
 class sliphandler(webapp2.RequestHandler):
@@ -197,6 +197,43 @@ class sliphandler(webapp2.RequestHandler):
                 self.response.status = 400
                 self.response.write("slip does not exist")
 
+
+class boatsliphandler(webapp2.RequestHandler):
+    def patch(self, id=None):
+        if id:
+            boat_data = json.loads(self.request.body)
+            #check to see if boat exists
+            exists = False
+            for item in boat.query():
+                if item.id == id:
+                    exists = True
+                    modify_boat = ndb.Key(urlsafe=id).get()
+            if exists:
+                if modify_boat.at_sea:
+                    #get list of slips and find available one
+                    slip_list = [get_slip_query.to_dict()
+                            for get_slip_query in slip.query()]
+                    empty_slip = False
+                    for item in slip_list:
+                        if item['current_boat'] is None:
+                            empty_slip = True
+                            get_slip = ndb.Key(urlsafe=item['id']).get()
+                    if empty_slip:
+                        get_slip.current_boat = id
+                        get_slip.arrival_date = boat_data['date']
+                        get_slip.put()
+                        modify_boat.at_sea = False
+                        modify_boat.put()
+                        self.response.write("boat added to slip")
+                    else:
+                        self.response.write("all slips are full")
+                else:
+                    self.response.status = 400
+                    self.response.write("boat is already in a slip")
+            else:
+                self.response.status = 403
+                self.response.write("boat does not exist")
+
 # [START main_page]
 class MainPage(webapp2.RequestHandler):
 
@@ -213,8 +250,9 @@ webapp2.WSGIApplication.allowed_methods = new_allowed_methods
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/boat', boathandler),
+    ('/boat/(.*)/slip', boatsliphandler),
     ('/boat/(.*)', boathandler),
     ('/slips', sliphandler),
-    ('/slips/(.*)', sliphandler)
+    ('/slips/(.*)', sliphandler),
     ], debug=True)
 # [END app]
