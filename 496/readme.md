@@ -1,1 +1,1 @@
-1/28: Initial pass at the homework. Able to create boats and slips.
+1/28: Initial pass at the homework. Able to create boats/slips, get all boats/slips
