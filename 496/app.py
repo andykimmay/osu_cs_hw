@@ -99,8 +99,6 @@ class boathandler(webapp2.RequestHandler):
                 self.response.status = 400
                 self.response.write("error: boat does not exist")
 
-
-
 #define slip per reqs
 class slip(ndb.Model):
     id = ndb.StringProperty()
@@ -121,7 +119,7 @@ class sliphandler(webapp2.RequestHandler):
         else:    
             for item in slip_query_results:
                 if item['number'] == slip_data['number']:
-                    self.response.status = 401
+                    self.response.status = 400
                     self.response.write("error: slip number is in use")
                 else:
                     new_slip = slip(number=slip_data['number'])
@@ -226,13 +224,42 @@ class boatsliphandler(webapp2.RequestHandler):
                         modify_boat.put()
                         self.response.write("boat added to slip")
                     else:
+                        self.response.status = 403
                         self.response.write("all slips are full")
                 else:
                     self.response.status = 400
                     self.response.write("boat is already in a slip")
             else:
+                self.response.status = 400
+                self.response.write("boat does not exist")
+
+    def delete(self, id=None):
+        if id:
+            exists = False
+            for item in boat.query():
+                if item.id == id:
+                    exists = True
+                    modify_boat = ndb.Key(urlsafe=id).get()
+            if exists:
+                if not modify_boat.at_sea:
+                    slip_list = [get_slip_query.to_dict()
+                                for get_slip_query in slip.query()]
+                    for item in slip_list:
+                        if item['current_boat'] == id:
+                            get_slip = ndb.Key(urlsafe=item['id']).get()
+                    get_slip.current_boat = ""
+                    get_slip.arrival_date = ""
+                    get_slip.put()
+                    modify_boat.at_sea = True
+                    modify_boat.put()
+                    self.response.write("boat put at sea, slip is now empty")
+                else:
+                    self.response.status = 403
+                    self.response.write("boat is already at sea")
+            else:
                 self.response.status = 403
                 self.response.write("boat does not exist")
+
 
 # [START main_page]
 class MainPage(webapp2.RequestHandler):
