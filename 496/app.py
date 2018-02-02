@@ -117,18 +117,20 @@ class sliphandler(webapp2.RequestHandler):
             self.response.status = 400
             self.response.write("error: cannot create slip, need all required fields")
         else:    
+            exists = False
             for item in slip_query_results:
                 if item['number'] == slip_data['number']:
+                    exists = True
                     self.response.status = 400
                     self.response.write("error: slip number is in use")
-                else:
-                    new_slip = slip(number=slip_data['number'])
-                    new_slip.put()
-                    new_slip.id = str(new_slip.key.urlsafe())
-                    new_slip.put()
-                    slip_dict = new_slip.to_dict()
-                    slip_dict['self'] = '/slips/' + new_slip.key.urlsafe()
-                    self.response.write(json.dumps(slip_dict))
+            if not exists:
+                new_slip = slip(number=slip_data['number'])
+                new_slip.put()
+                new_slip.id = str(new_slip.key.urlsafe())
+                new_slip.put()
+                slip_dict = new_slip.to_dict()
+                slip_dict['self'] = '/slips/' + new_slip.key.urlsafe()
+                self.response.write(json.dumps(slip_dict))
 
     def get(self, id=None):
         if id:
