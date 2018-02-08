@@ -1,0 +1,619 @@
+{
+	"info": {
+		"name": "rest planning and implementation",
+		"_postman_id": "9ccde912-a180-bc81-c301-6130dbfe1768",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get # of boats",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c57e83d0-42f0-4323-8ddb-aa80711f8ae2",
+						"type": "text/javascript",
+						"exec": [
+							"var object = JSON.parse(responseBody);",
+							"",
+							"pm.environment.set(\"boatCount\", responseBody);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/boat/",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"boat",
+						""
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "create boat",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"d\", \"b_type\": \"cruise\", \"length\": \"10\"}"
+				},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/boat",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"boat"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get all boats, confirm increase in # of boats",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "377200c5-902e-43ed-811f-43007b79e568",
+						"type": "text/javascript",
+						"exec": [
+							"var object = JSON.parse(responseBody);",
+							"",
+							"var oldboatcount = JSON.parse(pm.environment.get(\"boatCount\"));",
+							"",
+							"tests[\"Increased boat count\"] = object.length - oldboatcount.length === 1;",
+							"",
+							"pm.environment.set(\"boatCount\", responseBody);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/boat/",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"boat",
+						""
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get one boat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5edca41a-408d-43e4-b820-b503693ae40a",
+						"type": "text/javascript",
+						"exec": [
+							"var object = JSON.parse(responseBody);",
+							"",
+							"tests[\"Contents of boat match\"] = object.b_type === \"yacht\";"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/boat/ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRib2F0GICAgICAgIAKDA",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"boat",
+						"ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRib2F0GICAgICAgIAKDA"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete boat",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/boat/ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRib2F0GICAgIC81ZMKDA",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"boat",
+						"ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRib2F0GICAgIC81ZMKDA"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get all boats",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/boat/",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"boat",
+						""
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "confirm decrease in # of boats",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "00fe32aa-a346-4da5-b429-e0ae8ad28239",
+						"type": "text/javascript",
+						"exec": [
+							"var object = JSON.parse(responseBody);",
+							"",
+							"var oldboatcount = JSON.parse(pm.environment.get(\"boatCount\"));",
+							"",
+							"tests[\"Decreased boat count\"] = object.length - oldboatcount.length === -1;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/boat/",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"boat",
+						""
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "modify boat",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"c\"}"
+				},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/boat/ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRib2F0GICAgICAgIAKDA",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"boat",
+						"ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRib2F0GICAgICAgIAKDA"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "confirm modification",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "51cc4f0c-3934-4150-92d0-4345297288f2",
+						"type": "text/javascript",
+						"exec": [
+							"var object = JSON.parse(responseBody);",
+							"",
+							"tests[\"Contents of boat match\"] = object.name === \"c\";"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/boat/ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRib2F0GICAgICAgIAKDA",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"boat",
+						"ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRib2F0GICAgICAgIAKDA"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get all slips",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b065aa5f-920c-4eef-93a4-cf7e1069f7c6",
+						"type": "text/javascript",
+						"exec": [
+							"var object = JSON.parse(responseBody);",
+							"",
+							"pm.environment.set(\"slipCount\", responseBody);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/slips",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"slips"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "create slip",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"number\": 123456}"
+				},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/slips",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"slips"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get all boats, confirm increase in # of boats copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c3e6cb02-ea3e-46e6-8682-bad06aae8b82",
+						"type": "text/javascript",
+						"exec": [
+							"var object = JSON.parse(responseBody);",
+							"",
+							"var oldslipcount = JSON.parse(pm.environment.get(\"slipCount\"));",
+							"",
+							"tests[\"Increased slip count\"] = object.length - oldslipcount.length === 1;",
+							"",
+							"pm.environment.set(\"slipCount\", responseBody);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/slips/",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"slips",
+						""
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get one slip",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "230c40e5-d9cb-4e63-aafe-4212b5bd506c",
+						"type": "text/javascript",
+						"exec": [
+							"var object = JSON.parse(responseBody);",
+							"",
+							"tests[\"Slip number matches\"] = object.number === 1234;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/slips/ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRzbGlwGICAgIC8oYIKDA",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"slips",
+						"ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRzbGlwGICAgIC8oYIKDA"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete slip",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/slips/ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRzbGlwGICAgIDekIEKDA",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"slips",
+						"ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRzbGlwGICAgIDekIEKDA"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "confirm decrease in # of boats copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b5e8d19-0e3c-41c8-9366-1cd7a5477775",
+						"type": "text/javascript",
+						"exec": [
+							"var object = JSON.parse(responseBody);",
+							"",
+							"var oldslipcount = JSON.parse(pm.environment.get(\"slipCount\"));",
+							"",
+							"tests[\"Decreased slip count\"] = object.length - oldslipcount.length === -1;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/slips/",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"slips",
+						""
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Modify slip",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"number\": 123}"
+				},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/slips/ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRzbGlwGICAgIC8oYIKDA",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"slips",
+						"ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRzbGlwGICAgIC8oYIKDA"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "confirm modification of slip",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "51cc4f0c-3934-4150-92d0-4345297288f2",
+						"type": "text/javascript",
+						"exec": [
+							"var object = JSON.parse(responseBody);",
+							"",
+							"tests[\"Contents of boat match\"] = object.name === \"c\";"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/boat/ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRib2F0GICAgICAgIAKDA",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"boat",
+						"ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRib2F0GICAgICAgIAKDA"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "add boat to slip",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"date\": \"2011-01-01\"}"
+				},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/boat/ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRib2F0GICAgICAgIAKDA/slip",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"boat",
+						"ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRib2F0GICAgICAgIAKDA",
+						"slip"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "put boat to sea",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://marine-waters-192703.appspot.com/boat/ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRib2F0GICAgICAgIAKDA/slip",
+					"protocol": "https",
+					"host": [
+						"marine-waters-192703",
+						"appspot",
+						"com"
+					],
+					"path": [
+						"boat",
+						"ahZzfm1hcmluZS13YXRlcnMtMTkyNzAzchELEgRib2F0GICAgICAgIAKDA",
+						"slip"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
