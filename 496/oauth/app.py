@@ -7,9 +7,9 @@ import string
 import json
 import os
 
-CLIENT_ID = '308449516790-6j0f954v4j4rcggnbesda06pme6cbiln.apps.googleusercontent.com'
-CLIENT_SECRET = '_FQyulNpzTTPLMDsFVaH9TI5'
-REDIRECT = 'http://marine-waters-192703.appspot.com/authorization'
+CLIENT_ID = '308449516790-bsi5gplq6miq88ra8cpl6j4k8s98ua0h.apps.googleusercontent.com' 
+CLIENT_SECRET = ' 73vRPt_qkMndrIvkybbu5OtL'
+REDIRECT = 'http://trust-tiger.appspot.com/authorization'
 
 class index(webapp2.RequestHandler):
     def get(self):
