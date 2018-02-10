@@ -13,9 +13,9 @@ REDIRECT = 'http://trust-tiger.appspot.com/authorization'
 
 class index(webapp2.RequestHandler):
     def get(self):
-        randomString = "akajsldfkhalsdkhf" 
+        randomString = ''.join(random.choice(string.ascii_letters) for x in range(10))
 
-        url_text = 'Click Here'
+        url_text = 'Click Here to Authenticate'
 
         url = "https://accounts.google.com/o/oauth2/v2/auth?scope=email&access_type=offline&include_granted_scopes=true&state="
         url = url + randomString
