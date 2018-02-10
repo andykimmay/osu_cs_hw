@@ -13,7 +13,7 @@ REDIRECT = 'http://trust-tiger.appspot.com/authorization'
 
 class index(webapp2.RequestHandler):
     def get(self):
-        randomString = 
+        randomString = "akajsldfkhalsdkhf" 
 
         url_text = 'Click Here'
 
@@ -22,13 +22,12 @@ class index(webapp2.RequestHandler):
         url = url + "&redirect_uri=https://oauth2-imp.appspot.com/authorize&&response_type=code&client_id="
         url = url + CLIENT_ID
 
-class oAuth(webapp2.RequestHandler):
-    def get(self):
+        url_value = {'url':url}
+
+        path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
+        self.response.out.write(template.render(path, url_value))
+
 
 app = webapp2.WSGIApplication([
     ('/', index),
-    ('/authorization', oAuth)
 ], debug=True)
-
-
-
